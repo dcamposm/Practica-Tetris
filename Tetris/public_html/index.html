@@ -11,12 +11,17 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script type="text/javascript" src="codi.js"></script>
     </head>
-    <body>
-        <button onclick="Joc.autoMov()">Play</button>
+    <body id="play">
+        <button onclick="Joc.autoMov()">New Game</button>
         <button onclick="Joc.stop()">Stop</button>
+        <button onclick="Joc.continue()">Continue</button>
         <h1 id="p"></h1>
         <p id="t"></p>
         <noscript>No tens activat JavaScript</noscript>
     </body>
+    <script type="text/javascript">                                                          
+        var element = document.getElementById("play");                  
+        element.addEventListener("keydown", Joc.keyUser);   
+    </script>
 </html>
 
