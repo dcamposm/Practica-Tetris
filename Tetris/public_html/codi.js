@@ -10,7 +10,7 @@ var Joc = {
     puntsMax: 0,
     nivell: 1,
     pecaActual: 0,
-    pecaSeguent: null,
+    pecaSeguent: 0,
     cont: {"i": 0, "j": 0, "l": 0, "o": 0, "s": 0, "z": 0, "t": 0},
     inter: 1000,
     contInt: 0,
@@ -20,11 +20,13 @@ var Joc = {
         Joc.punts=0;
         Joc.puntsMax=0;
         Joc.nivell=1;
+        Joc.nextLvl=5;
         Joc.inter= 1000;
         Joc.contInt=0;
-        Joc.nextLvl=5;
         var newPeca=Joc.nextPeca();
-        Joc.pecaActual=new Peca(newPeca[0], newPeca[1],1,2);        
+        Joc.pecaActual=new Peca(newPeca[0], newPeca[1],1,4);
+        var newPeca=Joc.nextPeca();
+        Joc.pecaSeguent=new Peca(newPeca[0], newPeca[1],1,4);
         
         for (var i = 0; i < Joc.espai.length; i++) {
             Joc.espai[i] = new Array(10);
@@ -39,7 +41,7 @@ var Joc = {
             }
         }
         
-        Joc.mostrar();
+        //Joc.mostrar();
     },
     
     nextPeca: function() {
@@ -59,23 +61,29 @@ var Joc = {
     
     keyUser: function(e){
         if (e.key==="ArrowUp") {
-            Joc.pecaActual=Joc.pecaActual.rotarHorari();
+            Joc.pecaActual.rotarHorari();
         }
         else if (e.key==="ArrowDown") {
-            Joc.pecaActual=Joc.pecaActual.moureAvall();
+            if(Joc.pecaActual.moureAvall()===true){
+                Joc.pecaActual.posX++;
+            }       
         }
         else if (e.key==="ArrowRight") {
-            Joc.pecaActual=Joc.pecaActual.moureDreta();
+            if (Joc.pecaActual.moureDreta()===true){
+                Joc.pecaActual.posY++;
+            }
         }
         else if (e.key==="ArrowLeft") {
-            Joc.pecaActual=Joc.pecaActual.moureEsquerra();
+            if (Joc.pecaActual.moureEsquerra()===true){
+                Joc.pecaActual.posY--;
+            }
         }
     },
     
     autoMov: function(){
-        this.inici();
+        Joc.inici();
         
-        game=setInterval(Joc.mostrar, Joc.inter);
+        Joc.continue();
     },
     
     stop: function(){
@@ -88,7 +96,7 @@ var Joc = {
     
     mostrar: function(){     
         Joc.punts++;
-        Joc.contInt++;
+        /*Joc.contInt++;
         
         if (Joc.contInt>=this.nextLvl && Joc.inter>300){
             Joc.nivell++;
@@ -100,7 +108,7 @@ var Joc = {
             Joc.nivell++;
             Joc.punts+=20;
             Joc.nextLvl+=5;
-        }
+        }*/
         
         //if (enterPeca=true){this.punts+=10};
         
@@ -112,6 +120,20 @@ var Joc = {
             }
         }
         
+        var veureNext="";
+        for (var i=0; i<4; i++){
+            veureNext+="<br>";
+            for (var e=0; e<4; e++){
+                if (Joc.pecaSeguent.forma[i][e]===1){
+                    veureNext+="x"+" ";
+                }
+                else {
+                    veureNext+=0+" ";
+                }              
+            }
+        }
+        
+        
         var veure="";
         for (var i=0; i<Joc.espai.length; i++){
             veure+="<br>";
@@ -120,34 +142,45 @@ var Joc = {
             }
         }
         
+        var fin=false;
+        for (var i = 3; i>=0 && fin===false;i--){
+            for (var e = 0; e<4 && fin===false;e++){
+                if (Joc.pecaActual.forma[i][e]===1){
+                    if(Joc.espai[Joc.pecaActual.posX+i+1][Joc.pecaActual.posY+e]===1 || Joc.espai[Joc.pecaActual.posX+i+1][Joc.pecaActual.posY+e]==="p"){
+                        fin=true;
+                    }
+                }
+            }
+        }
         
-        
-        /*if (Joc.espai[Joc.pecaActual.posX+4][Joc.pecaActual.posY]===0){
+        if (fin===false){
             for (var i = 0; i<4;i++){
                 for (var e = 0; e<4;e++){
-                    Joc.espai[Joc.pecaActual.posX+i][Joc.pecaActual.posY+e] = 0;  
+                    if ( Joc.espai[Joc.pecaActual.posX+i][Joc.pecaActual.posY+e]==="x" ||  Joc.espai[Joc.pecaActual.posX+i][Joc.pecaActual.posY+e]===0){
+                        Joc.espai[Joc.pecaActual.posX+i][Joc.pecaActual.posY+e] = 0;  
+                    }
                 }
             }
             Joc.pecaActual.posX++;
         }
-        else if(Joc.espai[Joc.pecaActual.posX+4][Joc.pecaActual.posY]===1) {
+        else {
             for (var i = 0; i<4;i++){
                 for (var e = 0; e<4;e++){
                     if (Joc.pecaActual.forma[i][e]===1){
-                        Joc.espai[Joc.pecaActual.posX+i][Joc.pecaActual.posY+e] = 1;  
+                        Joc.espai[Joc.pecaActual.posX+i][Joc.pecaActual.posY+e] = "p";  
                     }
                 }
             }
+            Joc.pecaActual=Joc.pecaSeguent;
             var newPeca=Joc.nextPeca();
-            Joc.pecaActual=new Peca(newPeca[0], newPeca[1],1,2); 
-        }*/
-        
-        //Joc.pecaActual;
+            Joc.pecaSeguent=new Peca(newPeca[0], newPeca[1],1,4);
+        }
         
         logPunts="<b>PuntsMax:</b> "+Joc.puntsMax+" <b>PuntsActuals: </b>"+Joc.punts+" <b>Nivell: </b>"+Joc.nivell;
         
         //return [document.getElementById("t").innerHTML=veure,document.getElementById("p").innerHTML=logPunts];
         document.getElementById("t").innerHTML=veure;
+        document.getElementById("n").innerHTML=veureNext;
         document.getElementById("p").innerHTML=logPunts;
     }
     
@@ -172,8 +205,7 @@ var Peca = function(forma, color, posX, posY){
     };
     
     this.moureDreta = function(){ 
-        if ((x-1)>0) { 
-            x--;
+        if ((this.posY+1)>0) { 
             return true;
         }
         else { 
@@ -182,8 +214,7 @@ var Peca = function(forma, color, posX, posY){
     };
     
     this.moureEsquerra = function(){
-        if ((x+1)<14) { 
-            x++;
+        if ((this.posY-1)<10) { 
             return true;
         }
         else {
@@ -192,8 +223,7 @@ var Peca = function(forma, color, posX, posY){
     };
     
     this.moureAvall = function(){
-        if ((y+1)<14) { 
-            y++;
+        if ((this.posX+1)<25) { 
             return true;
         }
         else {
