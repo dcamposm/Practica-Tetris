@@ -12,21 +12,21 @@ var Joc = {
     pecaActual: 0,
     pecaSeguent: 0,
     cont: {"i": 0, "j": 0, "l": 0, "o": 0, "s": 0, "z": 0, "t": 0},
-    inter: 1000,
-    contInt: 0,
+    inter: 0,
+    contPec: 0,
     nextLvl: 5,
     
     inici: function() {
         Joc.punts=0;
         Joc.puntsMax=0;
         Joc.nivell=1;
-        Joc.nextLvl=5;
+        Joc.nextLvl=10;
         Joc.inter= 1000;
-        Joc.contInt=0;
+        Joc.contPec=0;
         var newPeca=Joc.nextPeca();
-        Joc.pecaActual=new Peca(newPeca[0], newPeca[1],1,4);
+        Joc.pecaActual=new Peca(newPeca[0], newPeca[1],1,3);
         var newPeca=Joc.nextPeca();
-        Joc.pecaSeguent=new Peca(newPeca[0], newPeca[1],1,4);
+        Joc.pecaSeguent=new Peca(newPeca[0], newPeca[1],1,3);
         
         for (var i = 0; i < Joc.espai.length; i++) {
             Joc.espai[i] = new Array(10);
@@ -41,6 +41,7 @@ var Joc = {
             }
         }
         
+        Joc.continue();
         //Joc.mostrar();
     },
     
@@ -62,30 +63,29 @@ var Joc = {
     keyUser: function(e){
         if (e.key==="ArrowUp") {
             Joc.pecaActual.rotarHorari();
+            Joc.mostrar();
         }
         else if (e.key==="ArrowDown") {
             if(Joc.pecaActual.moureAvall()===true){
+                Joc.punts++;
                 Joc.pecaActual.posX++;
+                Joc.mostrar();
             }       
         }
         else if (e.key==="ArrowRight") {
             if (Joc.pecaActual.moureDreta()===true){
                 Joc.pecaActual.posY++;
+                Joc.mostrar();
             }
         }
         else if (e.key==="ArrowLeft") {
             if (Joc.pecaActual.moureEsquerra()===true){
                 Joc.pecaActual.posY--;
+                Joc.mostrar();
             }
         }
     },
-    
-    autoMov: function(){
-        Joc.inici();
         
-        Joc.continue();
-    },
-    
     stop: function(){
         clearInterval(game);
     },
@@ -94,21 +94,36 @@ var Joc = {
         game=setInterval(Joc.mostrar, Joc.inter);
     },
     
+    end: function(){
+        alert('YOUR DIED');
+        game=setInterval(Joc.mostrar, 1000);
+        clearInterval(game);
+    },
+    
     mostrar: function(){     
-        Joc.punts++;
-        /*Joc.contInt++;
+        var taula = document.getElementById("view");
+        var veureNext = document.getElementById("next");
+        var ctx = taula.getContext("2d");
+        var ctxs = veureNext.getContext("2d");
+        var img;
+        var imgs;
         
-        if (Joc.contInt>=this.nextLvl && Joc.inter>300){
+        
+        Joc.punts++;
+        
+        if (Joc.contPec>=Joc.nextLvl && Joc.inter>300){
             Joc.nivell++;
             Joc.punts+=20;
-            Joc.nextLvl+=5;
-            //Joc.inter-=10;
+            Joc.nextLvl+=10;
+            Joc.inter=Joc.inter - 100;
+            
+            game=setInterval(Joc.mostrar, Joc.inter);
         }
-        else if(Joc.contInt>=Joc.nextLvl) {
+        else if(Joc.contPec>=Joc.nextLvl) {
             Joc.nivell++;
             Joc.punts+=20;
-            Joc.nextLvl+=5;
-        }*/
+            Joc.nextLvl+=10;
+        }
         
         //if (enterPeca=true){this.punts+=10};
         
@@ -120,34 +135,94 @@ var Joc = {
             }
         }
         
-        var veureNext="";
         for (var i=0; i<4; i++){
-            veureNext+="<br>";
             for (var e=0; e<4; e++){
-                if (Joc.pecaSeguent.forma[i][e]===1){
-                    veureNext+="x"+" ";
+                if (Joc.pecaSeguent.forma[i][e]===1) {
+                    switch (Joc.pecaSeguent.color){
+                        case "blau":
+                            imgs = document.getElementById("blau");
+                            break;
+                        case "groc":
+                            imgs = document.getElementById("groc");
+                            break;
+                        case "lila":
+                            imgs = document.getElementById("lila");
+                            break;
+                        case "morat":
+                            imgs = document.getElementById("morat");
+                            break;
+                        case "roig":
+                            imgs = document.getElementById("roig");
+                            break;
+                        case "taronja":
+                            imgs = document.getElementById("taronja");
+                            break;
+                        default:
+                            imgs = document.getElementById("verd");
+                    }
                 }
                 else {
-                    veureNext+=0+" ";
-                }              
+                    imgs = document.getElementById("point");
+                } 
+                ctxs.drawImage(imgs, e*23, i*23, 22, 22);
+            }   
+        }
+        
+        for (var i=0; i<Joc.espai.length; i++){
+            for (var e=0; e<Joc.espai[i].length; e++){
+                if(Joc.espai[i][e]==="p"){
+                    img = document.getElementById("point");
+                }
+                else if (Joc.espai[i][e]==="x") {
+                    switch (Joc.pecaActual.color){
+                        case "blau":
+                            img = document.getElementById("blau");
+                            break;
+                        case "groc":
+                            img = document.getElementById("groc");
+                            break;
+                        case "lila":
+                            img = document.getElementById("lila");
+                            break;
+                        case "morat":
+                            img = document.getElementById("morat");
+                            break;
+                        case "roig":
+                            img = document.getElementById("roig");
+                            break;
+                        case "taronja":
+                            img = document.getElementById("taronja");
+                            break;
+                        default:
+                            img = document.getElementById("verd");
+                    }
+                }
+                else if (Joc.espai[i][e]===1) {
+                    img = document.getElementById("pared");
+                }
+                else {
+                    img = document.getElementById("res");
+                }
+
+                ctx.drawImage(img, e*23, i*23, 25, 25);
             }
         }
         
         
-        var veure="";
+        /*var veure="";
         for (var i=0; i<Joc.espai.length; i++){
             veure+="<br>";
             for (var e=0; e<10; e++){
                 veure+=Joc.espai[i][e]+" ";
             }
-        }
+        }*/
         
         var fin=false;
         for (var i = 3; i>=0 && fin===false;i--){
             for (var e = 0; e<4 && fin===false;e++){
                 if (Joc.pecaActual.forma[i][e]===1){
                     if(Joc.espai[Joc.pecaActual.posX+i+1][Joc.pecaActual.posY+e]===1 || Joc.espai[Joc.pecaActual.posX+i+1][Joc.pecaActual.posY+e]==="p"){
-                        fin=true;
+                        fin = true;
                     }
                 }
             }
@@ -163,6 +238,7 @@ var Joc = {
             }
             Joc.pecaActual.posX++;
         }
+        
         else {
             for (var i = 0; i<4;i++){
                 for (var e = 0; e<4;e++){
@@ -171,16 +247,59 @@ var Joc = {
                     }
                 }
             }
+            
             Joc.pecaActual=Joc.pecaSeguent;
             var newPeca=Joc.nextPeca();
-            Joc.pecaSeguent=new Peca(newPeca[0], newPeca[1],1,4);
+            
+            switch (newPeca[1]){
+                case "lila":
+                    Joc.pecaSeguent=new Peca(newPeca[0], newPeca[1],1,3);
+                    break;
+                case "blau":
+                    Joc.pecaSeguent=new Peca(newPeca[0], newPeca[1],1,3);
+                    break;
+                case "taronga":
+                    Joc.pecaSeguent=new Peca(newPeca[0], newPeca[1],1,3);
+                    break;
+                default:
+                    Joc.pecaSeguent=new Peca(newPeca[0], newPeca[1],0,3);
+            }
+            
+            Joc.contPec++;            
+            
+            var cont=0;
+            var stop=false;
+            for (var i=23 ; stop===false; i--){
+                for (var e=0; e<10; e++){
+                    if (Joc.espai[i][e]==="p"){
+                        cont++;
+                    }
+                }
+                if (cont===8){
+                    for (var j = i; j>1;j--){
+                        for (var k = 0; k<10;k++){
+                            Joc.espai[j][k]=Joc.espai[j-1][k];
+                        }
+                    }
+                    i++;
+                    Joc.punts+=10;
+                }
+                else if (cont===0){
+                    stop=true;
+                }
+
+                else if (i===1){
+                    Joc.end();
+                }
+                
+                cont=0;
+            }
         }
         
         logPunts="<b>PuntsMax:</b> "+Joc.puntsMax+" <b>PuntsActuals: </b>"+Joc.punts+" <b>Nivell: </b>"+Joc.nivell;
         
         //return [document.getElementById("t").innerHTML=veure,document.getElementById("p").innerHTML=logPunts];
-        document.getElementById("t").innerHTML=veure;
-        document.getElementById("n").innerHTML=veureNext;
+
         document.getElementById("p").innerHTML=logPunts;
     }
     
@@ -201,33 +320,60 @@ var Peca = function(forma, color, posX, posY){
                     formaNova[i][j]=this.forma[this.forma[i].length-1-j][i];
                 }
             }
+            
+            for (var i = 3; i>=0;i--){
+                for (var e = 0; e<4;e++){
+                    if (formaNova[i][e]===1){
+                        if(Joc.espai[Joc.pecaActual.posX+i][Joc.pecaActual.posY+e]!==0){
+                            i=0;
+                            formaNova = this.forma;
+                        }
+                    }
+                }
+            }    
+            
         this.forma = formaNova;
     };
     
     this.moureDreta = function(){ 
-        if ((this.posY+1)>0) { 
-            return true;
+        for (var i = 3; i>=0;i--){
+            for (var e = 0; e<4;e++){
+                if (Joc.pecaActual.forma[i][e]===1){
+                    if(Joc.espai[Joc.pecaActual.posX+i][Joc.pecaActual.posY+e+1]===1 || Joc.espai[Joc.pecaActual.posX+i][Joc.pecaActual.posY+e+1]==="p"){
+                        return false;
+                    }
+                }
+            }
         }
-        else { 
-            return false; 
-        }
+
+        return true;
     };
     
     this.moureEsquerra = function(){
-        if ((this.posY-1)<10) { 
-            return true;
+        for (var i = 3; i>=0;i--){
+            for (var e = 0; e<4;e++){
+                if (Joc.pecaActual.forma[i][e]===1){
+                    if(Joc.espai[Joc.pecaActual.posX+i][Joc.pecaActual.posY+e-1]===1 || Joc.espai[Joc.pecaActual.posX+i][Joc.pecaActual.posY+e-1]==="p"){
+                        return false;
+                    }
+                }
+            }
         }
-        else {
-            return false;
-        }
+
+        return true;
     };
     
     this.moureAvall = function(){
-        if ((this.posX+1)<25) { 
-            return true;
+        for (var i = 3; i>=0;i--){
+            for (var e = 0; e<4;e++){
+                if (Joc.pecaActual.forma[i][e]===1){
+                    if(Joc.espai[Joc.pecaActual.posX+i+1][Joc.pecaActual.posY+e]===1 || Joc.espai[Joc.pecaActual.posX+i+1][Joc.pecaActual.posY+e]==="p"){
+                        return false;
+                    }
+                }
+            }
         }
-        else {
-            return false;
-        }
+
+        return true;
     };
 };

@@ -12,12 +12,26 @@ and open the template in the editor.
         <script type="text/javascript" src="codi.js"></script>
     </head>
     <body id="play">
-        <button onclick="Joc.autoMov()">New Game</button>
+        <button onclick="Joc.inici()">New Game</button>
         <button onclick="Joc.stop()">Stop</button>
         <button onclick="Joc.continue()">Continue</button>
+        
+        <img src="imagen/pared.png"         id="pared"          style="display: none;">
+        <img src="imagen/res.png"           id="res"            style="display: none;">
+        <img src="imagen/point.png"         id="point"          style="display: none;">
+        <img src="imagen/blau.png"          id="blau"           style="display: none;">
+        <img src="imagen/groc.png"          id="groc"           style="display: none;">
+        <img src="imagen/lila.png"          id="lila"           style="display: none;">
+        <img src="imagen/morat.png"         id="morat"          style="display: none;">
+        <img src="imagen/roig.png"          id="roig"           style="display: none;">
+        <img src="imagen/taronja.png"       id="taronja"        style="display: none;">
+        <img src="imagen/verd.png"          id="verd"           style="display: none;">
+        
         <h1 id="p"></h1>
-        <p id="t"></p>
-        <p id="n"></p>
+        <!--<p id="t"></p>-->
+        <canvas id="view" width="700" height="700"></canvas>
+
+        <canvas id="next" width="700" height="700"></canvas>
         <noscript>No tens activat JavaScript</noscript>
     </body>
     <script type="text/javascript">                                                          
