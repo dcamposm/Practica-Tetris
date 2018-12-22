@@ -3,6 +3,7 @@
 body {
     margin-top: 20px;
     margin-left: 10%;
+    height: 700px;
 }
 
 .log {
@@ -15,5 +16,6 @@ body {
 
 .next {
     position: relative;
-    top: -400px;
+    top: -600px;
+    left: 400px;
 }
