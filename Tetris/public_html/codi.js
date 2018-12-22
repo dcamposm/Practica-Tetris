@@ -28,6 +28,10 @@ var Joc = {
         var newPeca=Joc.nextPeca();
         Joc.pecaSeguent=new Peca(newPeca[0], newPeca[1],1,3);
         
+        if (getCookie("maxP")===""){
+            document.cookie = "maxP=0"; 
+         }
+        
         for (var i = 0; i < Joc.espai.length; i++) {
             Joc.espai[i] = new Array(10);
         }
@@ -41,7 +45,7 @@ var Joc = {
             }
         }
         
-        Joc.continue();
+        game=setInterval(Joc.mostrar, 1000);
         //Joc.mostrar();
     },
     
@@ -91,13 +95,23 @@ var Joc = {
     },
     
     continue: function(){
+        Joc.stop();
         game=setInterval(Joc.mostrar, Joc.inter);
     },
     
     end: function(){
+        Joc.stop();
+        
+        Joc.puntsMax=Joc.puntsMax+Joc.punts;
+        
+        if (getCookie("maxP")<Joc.puntsMax){
+            document.cookie="maxP="+Joc.puntsMax;
+        }
+        
+        Joc.puntsMax=0;
         alert('YOUR DIED');
-        game=setInterval(Joc.mostrar, 1000);
-        clearInterval(game);
+        
+        Joc.inici();
     },
     
     mostrar: function(){     
@@ -296,7 +310,7 @@ var Joc = {
             }
         }
         
-        logPunts="<b>PuntsMax:</b> "+Joc.puntsMax+" <b>PuntsActuals: </b>"+Joc.punts+" <b>Nivell: </b>"+Joc.nivell;
+        logPunts="<b>PuntsMax:</b> "+getCookie("maxP")+" <b>PuntsActuals: </b>"+Joc.punts+" <b>Nivell: </b>"+Joc.nivell;
         
         //return [document.getElementById("t").innerHTML=veure,document.getElementById("p").innerHTML=logPunts];
 
@@ -377,3 +391,19 @@ var Peca = function(forma, color, posX, posY){
         return true;
     };
 };
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}

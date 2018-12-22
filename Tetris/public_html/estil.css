@@ -1,0 +1,19 @@
+@import url("w3.css");
+
+body {
+    margin-top: 20px;
+    margin-left: 10%;
+}
+
+.log {
+    font-family: "Segoe UI",Arial,sans-serif;
+}
+
+.view {
+    margin-left: 50px;
+}
+
+.next {
+    position: relative;
+    top: -400px;
+}

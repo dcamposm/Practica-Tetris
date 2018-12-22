@@ -10,11 +10,12 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script type="text/javascript" src="codi.js"></script>
+        <link rel="stylesheet" type="text/css" href="estil.css" />
     </head>
     <body id="play">
-        <button onclick="Joc.inici()">New Game</button>
-        <button onclick="Joc.stop()">Stop</button>
-        <button onclick="Joc.continue()">Continue</button>
+        <button onclick="Joc.inici()" class="w3-button w3-blue">New Game</button>
+        <button onclick="Joc.stop()" class="w3-button w3-yellow">Stop</button>
+        <button onclick="Joc.continue()" class="w3-button w3-green">Continue</button>
         
         <img src="imagen/pared.png"         id="pared"          style="display: none;">
         <img src="imagen/res.png"           id="res"            style="display: none;">
@@ -27,11 +28,11 @@ and open the template in the editor.
         <img src="imagen/taronja.png"       id="taronja"        style="display: none;">
         <img src="imagen/verd.png"          id="verd"           style="display: none;">
         
-        <h1 id="p"></h1>
+        <h1 id="p" class="log"></h1>
         <!--<p id="t"></p>-->
-        <canvas id="view" width="700" height="700"></canvas>
+        <canvas id="view" class="view" width="300" height="600"></canvas>
 
-        <canvas id="next" width="700" height="700"></canvas>
+        <canvas id="next" class="next" width="100" height="100"></canvas>
         <noscript>No tens activat JavaScript</noscript>
     </body>
     <script type="text/javascript">                                                          
